@@ -64,3 +64,13 @@ count the stars matching the Gaia query directly on the archive with COUNT(*) an
 ```
 
 **Summary:** Check on Part 3 (explore output). **Passed.** Recounted empty entries in all 16 columns two independent ways, without pandas: Python's built-in `csv` module and `awk` on the raw text. Both match `explore_output.txt` exactly (0 for source_id, ra, dec, l, b, radial_velocity, radial_velocity_error; 226 for parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error, ruwe; 3 for phot_g_mean_mag; 122 for bp_rp), and the `csv` row count is 44,810. Sanity check: the 226 stars missing parallax/proper motion/ruwe are the *same* 226 stars in all 7 columns, as expected for stars where Gaia only measured a position. (Typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
+
+## Prompt 7
+
+**Prompt (verbatim):**
+
+```text
+open the Gaia DR3 gaia_source documentation and confirm every link, unit and the ruwe and bp_rp descriptions in columns.md
+```
+
+**Summary:** Check on Part 4 (`columns.md`). **Partly passed; the link could not be confirmed.** The official documentation page still returns HTTP 503 (the whole `/archive/documentation/GDR3/` section is down; the archive itself and ESA's Gaia site are up), so the agent checked against other official sources instead. **Units:** all 16 match the archive's own column metadata (compared line by line). **bp_rp:** recomputed `phot_bp_mean_mag − phot_rp_mean_mag` from the archive for 3,746 of our stars, which agrees with `bp_rp` to 1.2e-6 mag, and it is empty exactly when BP or RP is missing. **ruwe:** confirmed against Lindegren et al. 2021 (Gaia EDR3 astrometric solution, Sections 5.1 and 5.3): RUWE ≈ 1.0 for well-behaved sources, it measures deviations from the single-star model (e.g. binaries), and it is not given for 2-parameter solutions (which explains our 226 missing values); our median of 1.019 matches the paper's Table 4. Correction: the paper does not contain the 1.4 cut (that comes from the DR2 technical note, which returned 403), so the ruwe description was reworded to say what the paper supports. Also confirmed: pmra = μα cos δ and the 2016.0 epoch. **Link:** a real ESA URL inside the official data-model section, but not opened live; recheck later. Not verified: G-band wavelength range, Vega system, RV sign convention. Added a Verification section to `columns.md`. (Typed without the `CHECK:` prefix.) Files: `block2/columns.md`, `block2/prompts.md`.

@@ -28,8 +28,8 @@ and the longer explanations below should be checked against that page once it is
 | `radial_velocity` | How fast the star moves toward or away from us, measured from the Doppler shift of lines in its spectrum (Gaia's RVS spectrograph). Positive = moving away, negative = approaching. Measured relative to the Solar System barycentre. | km/s | Radial velocity | [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html) |
 | `radial_velocity_error` | The uncertainty on `radial_velocity`. | km/s | Radial velocity error | [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html) |
 | `phot_g_mean_mag` | How bright the star looks in Gaia's broad G band (roughly 330–1050 nm), as an apparent magnitude: **smaller numbers are brighter**. Vega magnitude system. | mag | G-band mean magnitude | [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html) |
-| `bp_rp` | Colour: the blue-band (BP) magnitude minus the red-band (RP) magnitude. Larger values mean a redder (usually cooler) star; smaller values mean bluer (hotter). Empty when BP or RP photometry is missing. | mag | BP - RP colour | [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html) |
-| `ruwe` | Renormalised Unit Weight Error: a quality score for how well Gaia's single-star model (position + parallax + proper motion) fits the measurements. About 1.0 means a good fit; values well above 1 (commonly > 1.4 is used as a cut) suggest a problem, often an unresolved binary star. No units. | none | Renormalised unit weight error | [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html) |
+| `bp_rp` | Colour: the blue-band (BP) magnitude minus the red-band (RP) magnitude, i.e. `phot_bp_mean_mag − phot_rp_mean_mag`. Larger values mean a redder (usually cooler) star; smaller values mean bluer (hotter). Empty when BP or RP photometry is missing. | mag | BP - RP colour | [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html) |
+| `ruwe` | Renormalised Unit Weight Error: a quality score for how well Gaia's single-star model (position + parallax + proper motion) fits the measurements. It is the square root of the fit's normalised chi-square, rescaled so that RUWE ≈ 1.0 for a well-behaved source. Values well above 1 mean the star deviates from the simple single-star model, which can be real (e.g. the wobble of an unresolved binary) or spurious (calibration problems). A cut of RUWE < 1.4 is widely used for "good" astrometry. Not given for stars with only a position (2-parameter solution). No units. | none | Renormalised unit weight error | [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html) |
 
 ## How the four motion columns connect to parallax and proper motion (lecture)
 
@@ -42,3 +42,19 @@ and the longer explanations below should be checked against that page once it is
 
 So parallax gives the distance, proper motion (`pmra`, `pmdec`) times distance gives the two velocity
 components across the sky, and `radial_velocity` gives the third component along the line of sight.
+
+## Verification (2026-10-28)
+
+The official `gaia_source` documentation page could not be opened: every page under
+`gea.esac.esa.int/archive/documentation/GDR3/` returned HTTP 503 (service unavailable), while
+the main archive and ESA's Gaia site were up. So the items were checked against other official sources:
+
+| Item | Checked against | Result |
+|---|---|---|
+| Units of all 16 columns | Gaia archive's own column metadata (`TAP_SCHEMA.columns` for `gaiadr3.gaia_source`), compared line by line | All 16 match |
+| `bp_rp` = BP − RP | Downloaded `phot_bp_mean_mag` and `phot_rp_mean_mag` from the archive for 3,746 of our stars and computed BP − RP | Agrees with `bp_rp` to 1.2 × 10⁻⁶ mag (rounding); `bp_rp` is empty exactly when BP or RP is missing |
+| `ruwe` description | Lindegren et al. 2021, *Gaia EDR3: The astrometric solution*, A&A 649, A2 ([arXiv:2012.03380](https://arxiv.org/abs/2012.03380)), Sections 5.1 and 5.3 | Confirmed: derived from the normalised chi-square of the fit, RUWE ≈ 1.0 for well-behaved sources, sensitive to unresolved binaries, not given for 2-parameter solutions. Our median RUWE (1.019) agrees with the paper's Table 4. The 1.4 cut is **not** in this paper (it comes from the DR2 RUWE technical note, GAIA-C3-TN-LU-LL-124, which returned HTTP 403). |
+| `pmra` includes cos(dec) | Same paper, Section 3.1: "μα∗ = μα cos δ" | Confirmed |
+| Reference epoch J2016.0 | [ESA Gaia DR3 page](https://www.cosmos.esa.int/web/gaia/dr3): "The reference epoch for Gaia DR3 ... is 2016.0" | Confirmed |
+| Documentation link | ESA Gaia DR3 page lists the official data model at `.../GDR3/Gaia_archive/chap_datamodel/`; our link is the `gaia_source` page inside it | **Not confirmed live** (503). Re-open the link when the documentation site is back up. |
+| G band ≈ 330–1050 nm; Vega magnitudes; RV positive = receding, relative to the barycentre | — | **Not verified** against a source in this check (the passband page gives the curves only as a figure) |
