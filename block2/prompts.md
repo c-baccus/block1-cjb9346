@@ -44,3 +44,13 @@ ok use the 44810 for now, ill ask. tell me what else youve done
 ```
 
 **Summary:** Agent kept the verified 44,810-star file. Reran `explore.py` (44,810 rows; 226 stars lack parallax/proper motion/ruwe, 122 lack bp_rp, 3 lack G), and recounted rows and empty fields with plain Python `csv` (no pandas), which matched exactly. Wrote `columns.md`: units and official descriptions from the archive's `TAP_SCHEMA`, links to the official DR3 `gaia_source` data-model page (the docs site returned HTTP 503, so the links are not yet click-checked), and a lecture-connection table for parallax, pmra, pmdec and radial_velocity. Wrote `numbers.py`: nearest star 13.233 pc = 43.16 ly; median parallax 0.6849 mas → 1460 pc; best-parallax star μ = 313.24 mas/yr, v_t = 19.65 km/s vs v_r = 11.17 km/s; 466 negative, 226 missing, 966 with parallax < error; plus an explanation of why d = 1/parallax fails. Re-derived v_t in SI units (agrees: 19.65 km/s); the SIMBAD outside-source check failed because the service was unreachable. Found and fixed a bug: the required name `numbers.py` shadows Python's built-in `numbers` module and broke numpy imports, so an import-path guard was added to every block2 script. Made both plots; looked at them and changed the zoom panel to log scale because the negative parallaxes were invisible on a linear axis. Committed and pushed to GitHub, then confirmed every file is on the remote. Files: `block2/explore.py`, `block2/explore_output.txt`, `block2/columns.md`, `block2/numbers.py`, `block2/numbers_output.txt`, `block2/plots.py`, `block2/parallax_histogram.png`, `block2/sky_map_galactic.png`, `block2/get_data.py`, `block2/README.md`, `block2/prompts.md`.
+
+## Prompt 5
+
+**Prompt (verbatim):**
+
+```text
+count the stars matching the Gaia query directly on the archive with COUNT(*) and compare it to the number of rows in data/gaia_physics1.csv
+```
+
+**Summary:** Check on the data download (Part 2). **Passed.** Archive `SELECT COUNT(*) ... WHERE radial_velocity IS NOT NULL AND random_index < 2400000` = 44,810; the file has 44,810 rows (by `wc -l` minus the header, and by pandas), all `source_id`s unique, no empty `radial_velocity`. Because a matching count alone doesn't prove the stars are the same, the agent also downloaded a separate 1-column `source_id` list from the archive: all 44,810 IDs match the file exactly (0 extra, 0 missing). The `random_index` cut can't be checked from the file itself because that column isn't included. (This prompt was typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
