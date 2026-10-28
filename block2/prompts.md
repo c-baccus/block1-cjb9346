@@ -54,3 +54,13 @@ count the stars matching the Gaia query directly on the archive with COUNT(*) an
 ```
 
 **Summary:** Check on the data download (Part 2). **Passed.** Archive `SELECT COUNT(*) ... WHERE radial_velocity IS NOT NULL AND random_index < 2400000` = 44,810; the file has 44,810 rows (by `wc -l` minus the header, and by pandas), all `source_id`s unique, no empty `radial_velocity`. Because a matching count alone doesn't prove the stars are the same, the agent also downloaded a separate 1-column `source_id` list from the archive: all 44,810 IDs match the file exactly (0 extra, 0 missing). The `random_index` cut can't be checked from the file itself because that column isn't included. (This prompt was typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
+
+## Prompt 6
+
+**Prompt (verbatim):**
+
+```text
+ count the missing values in each column a different way, without pandas, and compare to explore_output.txt
+```
+
+**Summary:** Check on Part 3 (explore output). **Passed.** Recounted empty entries in all 16 columns two independent ways, without pandas: Python's built-in `csv` module and `awk` on the raw text. Both match `explore_output.txt` exactly (0 for source_id, ra, dec, l, b, radial_velocity, radial_velocity_error; 226 for parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error, ruwe; 3 for phot_g_mean_mag; 122 for bp_rp), and the `csv` row count is 44,810. Sanity check: the 226 stars missing parallax/proper motion/ruwe are the *same* 226 stars in all 7 columns, as expected for stars where Gaia only measured a position. (Typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
