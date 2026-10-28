@@ -1,0 +1,7 @@
+Python 3.13.5 (/Users/carolinebaccus/Downloads/Claude Projects/physics1-ai-project/.venv/bin/python)
+Platform macOS-26.1-arm64-arm-64bit-Mach-O
+numpy        2.5.4
+pandas       3.1.0
+matplotlib   3.11.2
+astroquery   0.4.11
+requests     2.34.2

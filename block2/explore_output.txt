@@ -1,0 +1,40 @@
+File: data/gaia_physics1.csv
+Number of stars (rows): 44,810
+Number of columns: 16
+
+Columns:
+  source_id
+  ra
+  dec
+  l
+  b
+  parallax
+  parallax_error
+  pmra
+  pmra_error
+  pmdec
+  pmdec_error
+  radial_velocity
+  radial_velocity_error
+  phot_g_mean_mag
+  bp_rp
+  ruwe
+
+Numerical columns (missing = empty entries in the file):
+  column                                    min                median                   max  missing
+  source_id                     850236021522688   4224690142002164736   6917515734718201472        0
+  ra                                   0.016316               240.242               359.989        0
+  dec                                  -89.3261              -16.1152               89.3878        0
+  l                                  0.00550057               193.543               359.997        0
+  b                                    -88.9845              -1.48696               89.2906        0
+  parallax                             -4.28512              0.684868               75.5689      226
+  parallax_error                     0.00797477             0.0202197              0.948081      226
+  pmra                                 -334.061              -2.07799               451.722      226
+  pmra_error                         0.00444831             0.0204904               0.85499      226
+  pmdec                                -565.336              -3.01983                340.64      226
+  pmdec_error                        0.00677842             0.0186618              0.837674      226
+  radial_velocity                      -507.359              -3.79563               757.627        0
+  radial_velocity_error                0.116698               3.25293               39.3221        0
+  phot_g_mean_mag                       5.14459               14.1182               16.3278        3
+  bp_rp                               -0.069694                1.2923                6.8742      122
+  ruwe                                 0.492559               1.01899               62.9178      226

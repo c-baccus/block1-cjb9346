@@ -1,0 +1,36 @@
+Numbers for data/gaia_physics1.csv (44,810 stars)
+
+1. Nearest star in the file (largest parallax)
+   source_id      = 1605198298364601088
+   parallax       = 75.5689 +/- 0.0151 mas
+   distance       = 13.233 pc = 43.16 light-years
+
+2. A typical star (median parallax)
+   median parallax = 0.6849 mas
+   distance        = 1460 pc = 4762 light-years (about 1.46 kpc)
+
+3. Speed across the sky (star with the most precise parallax, ruwe < 1.4)
+   source_id        = 1605198298364601088
+   parallax         = 75.5689 +/- 0.0151 mas  (parallax/error = 5015)
+   distance         = 13.23 pc
+   pmra, pmdec      = -191.457, 247.919 mas/yr
+   total proper motion mu = sqrt(pmra^2 + pmdec^2) = 313.240 mas/yr
+   speed across the sky v_t = 4.74 * mu[arcsec/yr] * d[pc] = 19.65 km/s
+   radial_velocity (along line of sight) = 11.17 +/- 0.12 km/s
+   total 3-D speed relative to the Sun = sqrt(v_t^2 + v_r^2) = 22.60 km/s
+
+4. The trouble with parallax
+   stars with a negative parallax:                    466
+   stars with no parallax at all (empty):             226
+   stars with parallax smaller than parallax_error:   966  (this includes all 466 negative ones)
+
+Why you can't just take distance = 1 / parallax for every star
+   A parallax is a measurement with an error, not an exact value. When the error is
+   comparable to the parallax itself, 1/parallax is very unreliable: noise can push a tiny
+   true parallax up (giving a distance that is far too small) or down to zero or below
+   (giving an infinite or negative 'distance', which is meaningless). Because 1/p is a
+   non-linear function, even unbiased errors in p give biased distances. Stars with no
+   parallax at all (Gaia only measured their position) have no distance from this method.
+   So 1/parallax is only trustworthy when parallax/parallax_error is large (roughly > 5-10);
+   for the rest you need a statistical approach that uses the uncertainty (e.g. a prior on
+   distance), or you leave those stars out.
