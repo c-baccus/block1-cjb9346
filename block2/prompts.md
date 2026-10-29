@@ -84,3 +84,13 @@ open the Gaia DR3 gaia_source documentation and confirm every link, unit and the
 ```
 
 **Summary:** Check on Part 5 (`numbers_output.txt`). **Passed.** Picked the nearest star again directly from the CSV (plain `csv` module): the same star, Gaia DR3 1605198298364601088. Recomputed in SI units with IAU constants: p = 75.5689 mas = 3.6637e-7 rad; d = 1 AU / tan(p) = 4.0833e17 m = 13.2330 pc = 43.160 ly; μ = 313.240 mas/yr = 4.8123e-14 rad/s; v_t = μ·d = 19,649.7 m/s = 19.650 km/s; total speed with v_r = 11.17 km/s is 22.60 km/s. All match `numbers_output.txt`. **SIMBAD was unreachable** (connection refused from both the terminal and web fetch), so as the outside source the agent used the **Hipparcos** catalogue (an independent 1990s satellite, hosted in the Gaia archive): the star is HIP 71181 (position match 0.001″), Hipparcos parallax 75.65 ± 0.42 mas → 13.22 pc = 43.11 ly. That differs from Gaia's 75.569 ± 0.015 mas by only 0.08 mas (0.2σ). Physical sense check: the absolute magnitude of about 6.8 with B−V ≈ 1.0 fits a K-type main-sequence star, a normal neighbour at 13 pc. (Typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
+
+## Prompt 9
+
+**Prompt (verbatim):**
+
+```text
+. CHECK: count the stars matching the Gaia query directly on the archive with COUNT(*) and compare it to the number of rows in data/gaia_physics1.csv
+```
+
+**Summary:** CHECK on Part 2 (data download), re-run fresh against the live archive. **Passed.** Archive `COUNT(*)` = 44,810 and `COUNT(DISTINCT source_id)` = 44,810 for `radial_velocity IS NOT NULL AND random_index < 2400000`. The file has 44,810 rows (by `wc -l` minus the header and by Python's `csv` module), all unique. A freshly downloaded 1-column `source_id` list from the archive matches the file star for star (44,810 in both, 0 extra, 0 missing). The handout's 40,961 still disagrees with the archive; that question is open with the instructor. Files: `block2/prompts.md`.
