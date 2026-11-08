@@ -155,4 +155,4 @@ Last: push to GitHub and confirm it arrived
 commit and push everything to GitHub, then fetch from GitHub and confirm the new prompts.md entries and any changed files are actually on the remote
 ```
 
-**Summary:** _(pending — agent fills this in)_
+**Summary:** Committed (`84b722a`) and pushed to `origin/main` the changes to `block2/columns.md`, `block2/get_data.py` and `block2/prompts.md`. **Confirmed on the remote:** after `git fetch`, `git ls-remote` shows GitHub's `main` = `84b722a`, the same as local `HEAD`. The fetched tree is identical to local, all 6 new prompt entries (20:00–20:43) are in the remote `prompts.md`, and the 3 changed files fetched from raw.githubusercontent.com match the local files byte for byte. Note: the GitHub repo has been renamed to `c-baccus/block1-cjb9346`; the old `physics1-ai-project` URL in `origin` still works via a redirect. This summary was pushed as a second log-only commit. Files: `block2/prompts.md`.
