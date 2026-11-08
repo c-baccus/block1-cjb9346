@@ -50,7 +50,7 @@ ok use the 44810 for now, ill ask. tell me what else youve done
 **Prompt (verbatim):**
 
 ```text
- CHECK: count the stars matching the Gaia query directly on the archive with COUNT(*) and compare it to the number of rows in data/gaia_physics1.csv
+count the stars matching the Gaia query directly on the archive with COUNT(*) and compare it to the number of rows in data/gaia_physics1.csv
 ```
 
 **Summary:** Check on the data download (Part 2). **Passed.** Archive `SELECT COUNT(*) ... WHERE radial_velocity IS NOT NULL AND random_index < 2400000` = 44,810; the file has 44,810 rows (by `wc -l` minus the header, and by pandas), all `source_id`s unique, no empty `radial_velocity`. Because a matching count alone doesn't prove the stars are the same, the agent also downloaded a separate 1-column `source_id` list from the archive: all 44,810 IDs match the file exactly (0 extra, 0 missing). The `random_index` cut can't be checked from the file itself because that column isn't included. (This prompt was typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
@@ -60,7 +60,7 @@ ok use the 44810 for now, ill ask. tell me what else youve done
 **Prompt (verbatim):**
 
 ```text
-  CHECK: count the missing values in each column a different way, without pandas, and compare to explore_output.txt
+ count the missing values in each column a different way, without pandas, and compare to explore_output.txt
 ```
 
 **Summary:** Check on Part 3 (explore output). **Passed.** Recounted empty entries in all 16 columns two independent ways, without pandas: Python's built-in `csv` module and `awk` on the raw text. Both match `explore_output.txt` exactly (0 for source_id, ra, dec, l, b, radial_velocity, radial_velocity_error; 226 for parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error, ruwe; 3 for phot_g_mean_mag; 122 for bp_rp), and the `csv` row count is 44,810. Sanity check: the 226 stars missing parallax/proper motion/ruwe are the *same* 226 stars in all 7 columns, as expected for stars where Gaia only measured a position. (Typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
@@ -70,7 +70,7 @@ ok use the 44810 for now, ill ask. tell me what else youve done
 **Prompt (verbatim):**
 
 ```text
- CHECK: open the Gaia DR3 gaia_source documentation and confirm every link, unit and the ruwe and bp_rp descriptions in columns.md
+open the Gaia DR3 gaia_source documentation and confirm every link, unit and the ruwe and bp_rp descriptions in columns.md
 ```
 
 **Summary:** Check on Part 4 (`columns.md`). **Partly passed; the link could not be confirmed.** The official documentation page still returns HTTP 503 (the whole `/archive/documentation/GDR3/` section is down; the archive itself and ESA's Gaia site are up), so the agent checked against other official sources instead. **Units:** all 16 match the archive's own column metadata (compared line by line). **bp_rp:** recomputed `phot_bp_mean_mag − phot_rp_mean_mag` from the archive for 3,746 of our stars, which agrees with `bp_rp` to 1.2e-6 mag, and it is empty exactly when BP or RP is missing. **ruwe:** confirmed against Lindegren et al. 2021 (Gaia EDR3 astrometric solution, Sections 5.1 and 5.3): RUWE ≈ 1.0 for well-behaved sources, it measures deviations from the single-star model (e.g. binaries), and it is not given for 2-parameter solutions (which explains our 226 missing values); our median of 1.019 matches the paper's Table 4. Correction: the paper does not contain the 1.4 cut (that comes from the DR2 technical note, which returned 403), so the ruwe description was reworded to say what the paper supports. Also confirmed: pmra = μα cos δ and the 2016.0 epoch. **Link:** a real ESA URL inside the official data-model section, but not opened live; recheck later. Not verified: G-band wavelength range, Vega system, RV sign convention. Added a Verification section to `columns.md`. (Typed without the `CHECK:` prefix.) Files: `block2/columns.md`, `block2/prompts.md`.
@@ -80,7 +80,17 @@ ok use the 44810 for now, ill ask. tell me what else youve done
 **Prompt (verbatim):**
 
 ```text
- CHECK: recompute the nearest star's distance and the tangential velocity by hand in SI units, and look up the nearest star in SIMBAD to compare its distance
+ recompute the nearest star's distance and the tangential velocity by hand in SI units, and look up the nearest star in SIMBAD to compare its distance
 ```
 
- 
+**Summary:** Check on Part 5 (`numbers_output.txt`). **Passed.** Picked the nearest star again directly from the CSV (plain `csv` module): the same star, Gaia DR3 1605198298364601088. Recomputed in SI units with IAU constants: p = 75.5689 mas = 3.6637e-7 rad; d = 1 AU / tan(p) = 4.0833e17 m = 13.2330 pc = 43.160 ly; μ = 313.240 mas/yr = 4.8123e-14 rad/s; v_t = μ·d = 19,649.7 m/s = 19.650 km/s; total speed with v_r = 11.17 km/s is 22.60 km/s. All match `numbers_output.txt`. **SIMBAD was unreachable** (connection refused from both the terminal and web fetch), so as the outside source the agent used the **Hipparcos** catalogue (an independent 1990s satellite, hosted in the Gaia archive): the star is HIP 71181 (position match 0.001″), Hipparcos parallax 75.65 ± 0.42 mas → 13.22 pc = 43.11 ly. That differs from Gaia's 75.569 ± 0.015 mas by only 0.08 mas (0.2σ). Physical sense check: the absolute magnitude of about 6.8 with B−V ≈ 1.0 fits a K-type main-sequence star, a normal neighbour at 13 pc. (Typed without the `CHECK:` prefix.) Files: `block2/prompts.md`.
+
+## Prompt 9
+
+**Prompt (verbatim):**
+
+```text
+. CHECK: count the stars matching the Gaia query directly on the archive with COUNT(*) and compare it to the number of rows in data/gaia_physics1.csv
+```
+
+**Summary:** CHECK on Part 2 (data download), re-run fresh against the live archive. **Passed.** Archive `COUNT(*)` = 44,810 and `COUNT(DISTINCT source_id)` = 44,810 for `radial_velocity IS NOT NULL AND random_index < 2400000`. The file has 44,810 rows (by `wc -l` minus the header and by Python's `csv` module), all unique. A freshly downloaded 1-column `source_id` list from the archive matches the file star for star (44,810 in both, 0 extra, 0 missing). The handout's 40,961 still disagrees with the archive; that question is open with the instructor. Files: `block2/prompts.md`.
