@@ -94,3 +94,65 @@ open the Gaia DR3 gaia_source documentation and confirm every link, unit and the
 ```
 
 **Summary:** CHECK on Part 2 (data download), re-run fresh against the live archive. **Passed.** Archive `COUNT(*)` = 44,810 and `COUNT(DISTINCT source_id)` = 44,810 for `radial_velocity IS NOT NULL AND random_index < 2400000`. The file has 44,810 rows (by `wc -l` minus the header and by Python's `csv` module), all unique. A freshly downloaded 1-column `source_id` list from the archive matches the file star for star (44,810 in both, 0 extra, 0 missing). The handout's 40,961 still disagrees with the archive; that question is open with the instructor. Files: `block2/prompts.md`.
+
+## Prompt — 2026-11-07 20:00
+
+**Prompt (verbatim):**
+
+```text
+CHECK: recount the number of rows and the empty entries in every column using awk on the raw CSV file, without Python, and compare each number to explore_output.txt
+```
+
+**Summary:** CHECK on the row and empty-entry counts in `explore_output.txt`, redone with `awk -F,` on the raw CSV (no Python). **Passed:** 44,810 data rows (`wc -l` = 44,811 including the header), every row has 16 fields, and the file has no quote characters or CRs, so a plain comma split is safe. Empty entries match in all 16 columns: 0 in source_id/ra/dec/l/b/radial_velocity/radial_velocity_error; 226 in parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error, ruwe; 3 in phot_g_mean_mag; 122 in bp_rp. No `NaN`/`null`/whitespace-only placeholders. Nothing needed fixing. Files: `block2/prompts.md`.
+
+## Prompt — 2026-11-07 20:01
+
+**Prompt (verbatim):**
+
+```text
+CHECK: open the official Gaia DR3 gaia_source documentation page, confirm that the link in columns.md works, and compare the units and the descriptions of ruwe, bp_rp, phot_g_mean_mag and radial_velocity in columns.md against what the documentation says. Fix anything that is wrong and update the Verification section.
+```
+
+**Summary:** CHECK on `columns.md` against the official `gaia_source` documentation page. **Found a mistake, fixed.** The link now works (HTTP 200; it was 503 on 2026-10-28). Units of all 16 columns and the descriptions of ruwe, bp_rp, phot_g_mean_mag (Vega scale) and radial_velocity (barycentric frame) match the page. The mistake: the intro said the page lists fields "in the same order as the table", which is false (l and b sit near the end, and ruwe comes before the photometry). Also refreshed the outdated 503 note, made the ruwe description precise (√ reduced χ² ÷ f(G, BP−RP)), and labelled the RUWE < 1.4 cut as a community convention that is not on the page. Added a 2026-11-07 Verification section. Still unverified: G band 330–1050 nm, and the RV sign convention. Files: `block2/columns.md`, `block2/prompts.md`.
+
+## Prompt — 2026-11-07 20:02
+
+**Prompt (verbatim):**
+
+```text
+check:  the page does not give the G band's wavelength range (~330–1050 nm) or say that positive radial velocity means moving away. Both claims are still marked unverified.
+```
+
+**Summary:** CHECK on the two claims left unverified in `columns.md`. **Passed, both confirmed; no text changes were needed.** (1) G band: in the official Gaia (E)DR3 passband table (`passband.dat`, from ESA's DR3 passbands page), the G transmission is above 1% of peak from 330 to 1030 nm and above 0.1% from 327 to 1050 nm, so "roughly 330–1050 nm" is fair. (2) RV sign: the Gaia DR3 RVS wavelength-calibration docs define λ_obs = λ_rest(1 + V/c), so V > 0 is a redshift, i.e. receding. Added a follow-up table to the Verification section. Files: `block2/columns.md`, `block2/prompts.md`.
+
+## Prompt — 2026-11-07 20:40
+
+**Prompt (verbatim):**
+
+```text
+CHECK: test whether the sky map is physically sensible: count what fraction of stars have |b| < 10 degrees and compare it to what you would expect if stars were spread evenly over the sky. The Milky Way disk should make it much higher. Also confirm the parallax histogram includes all 466 negative parallaxes by counting the stars below zero in the plotted data.
+```
+
+**Summary:** CHECK on the two Part 6 plots. **Passed, nothing to fix.** (1) Sky map: an awk count gives 23,631 of 44,810 stars (52.7%) with |b| < 10°. If stars were spread evenly over the sky the fraction would be sin 10° = 17.4%, so the disk concentration is 3.0× that, as expected for the Milky Way disk (|b| < 5°: 29.1% vs 8.7%, 3.3×). (2) Parallax histogram: `plots.py` was re-run with saving turned off (PNGs untouched) and the drawn bars were read back. The zoom panel (−5 to 5 mas; minimum parallax −4.29, so nothing is cut) has exactly 466 stars in bins below 0, matching an independent awk count of 466 (none equal to 0). The full-range panel draws all 44,584 parallaxes; its negatives are 189 in bins wholly below 0, plus 277 in the bin spanning −0.093 to +0.107 mas. Files: `block2/prompts.md` (check script in the scratchpad, not the repo).
+
+## Prompt — 2026-11-07 20:42
+
+**Prompt (verbatim):**
+
+```text
+fix the old star count in get_data.py
+the handout now says the correct file has 44,810 stars. update get_data.py so its docstring and EXPECTED_ROWS say 44,810 instead of 40,961
+```
+
+**Summary:** Updated `block2/get_data.py` to the handout's corrected count: the docstring now reads "Handout says: 44,810 rows x 16 columns" and `EXPECTED_ROWS = 44810`, so the mismatch NOTE no longer prints for a correct download. Left line 7's "~40,961" alone because it describes what the truncated one-shot query actually returned. The file compiles. `block2/README.md` lines 7–8 still say the handout expects 40,961 and were not changed. Files: `block2/get_data.py`, `block2/prompts.md`.
+
+## Prompt — 2026-11-07 20:43
+
+**Prompt (verbatim):**
+
+```text
+Last: push to GitHub and confirm it arrived
+commit and push everything to GitHub, then fetch from GitHub and confirm the new prompts.md entries and any changed files are actually on the remote
+```
+
+**Summary:** _(pending — agent fills this in)_

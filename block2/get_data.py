@@ -1,7 +1,7 @@
 """Download the Physics 1 Gaia DR3 sample and save it to data/gaia_physics1.csv.
 
 Sample: gaiadr3.gaia_source stars that have a radial velocity and random_index < 2,400,000.
-Handout says: 40,961 rows x 16 columns.
+Handout says: 44,810 rows x 16 columns.
 
 Why it downloads in chunks: asking the archive for all 16 columns in one synchronous query
 silently returns only ~40,961 rows, and a *different* subset of stars on each run, while the
@@ -41,7 +41,7 @@ RANDOM_INDEX_MAX = 2_400_000
 CHUNK = 200_000  # ~3,700 stars per chunk, far below where truncation sets in
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "gaia_physics1.csv"
-EXPECTED_ROWS = 40961
+EXPECTED_ROWS = 44810
 
 
 def run_query(adql):
